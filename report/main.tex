@@ -99,4 +99,37 @@ Furthermore, the interaction frequency visualized in the long-tail plot follows 
 		\caption{Long Tail Frequency (Logarithmic Scale)}
 	\end{figure}
 	
+	\section{Data Preprocessing \& Noise Reduction}
+	To address the cold-start problem and mitigate the computational challenges imposed by the high sparsity of the user-item interaction matrix, a robust data filtering pipeline was implemented. In collaborative filtering systems, users with very few interactions often introduce high noise and minimal signal, which severely limits the model's ability to learn stable and reliable preference profiles.
+	
+	Therefore, an activity threshold $\tau$ is defined such that any user $u$ with a total number of interactions less than $\tau$ is excluded from the active dataset. Formally, let $R_u = \{i \in I \mid r_{ui} \neq 0\}$ represent the set of items rated by user $u$. The filtering criterion for the active user base is expressed as:
+	\begin{equation}
+		U_{\text{filtered}} = \{u \in U \mid |R_u| \ge \tau\}
+	\end{equation}
+	
+	For this implementation, the threshold was set to $\tau = 50$. This preprocessing step ensures that the recommendation engine trains exclusively on high-quality user profiles with well-established historical preferences, thereby significantly reducing matrix sparsity and optimizing computational efficiency.
+	
+\section{Data Preprocessing \& Noise Reduction}
+To address the cold-start problem and mitigate the computational challenges imposed by the high sparsity of the user-item interaction matrix, a robust data filtering pipeline was implemented. In collaborative filtering systems, users with very few interactions often introduce high noise and minimal signal, which severely limits the model's ability to learn stable and reliable preference profiles.
+
+Therefore, an activity threshold $\tau$ is defined such that any user $u$ with a total number of interactions less than $\tau$ is excluded from the active dataset. Formally, let $R_u = \{i \in I \mid r_{ui} \neq 0\}$ represent the set of items rated by user $u$. The filtering criterion for the active user base is expressed as:
+
+$$ U_{\text{filtered}} = \{u \in U \mid |R_u| \ge \tau\} $$
+
+For this implementation, the threshold was set to $\tau = 50$. This preprocessing step ensures that the recommendation engine trains exclusively on high-quality user profiles with well-established historical preferences, thereby significantly reducing matrix sparsity and optimizing computational efficiency.
+
+The quantitative impact of this filtering process on the dataset dimensions is summarized in Table~\ref{tab:dataset_stats}.
+
+\begin{table}[h!]
+	\centering
+	\caption{Dataset Statistics Before and After Noise Reduction ($\tau = 50$)}
+	\label{tab:dataset_stats}
+	\begin{tabular}{|l|r|r|r|}
+		\hline
+		\textbf{Metric} & \textbf{Original Dataset} & \textbf{Filtered Dataset} & \textbf{Impact (\% Change)} \\ \hline
+		Total Ratings   & 7,813,737                 & 7,166,253                 & -8.29\%                     \\ \hline
+		Unique Users    & 73,515                    & 39,466                    & -46.32\%                    \\ \hline
+	\end{tabular}
+\end{table}
+	
 \end{document}
