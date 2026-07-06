@@ -137,5 +137,27 @@ The similarity between anime vectors was measured using Cosine Similarity. For t
 \end{equation}
 
 This operation yielded a symmetric, square similarity matrix $S \in \mathbb{R}^{I \times I}$, where $I$ represents the total number of unique anime titles (11,162). Each cell $s_{ij} \in [0, 1]$ indicates the strength of the collaborative relationship between item $i$ and item $j$, forming the mathematical foundation for the recommendation engine.	
+
+\section{Recommendation Generation}
+Once the symmetric item similarity matrix $S \in \mathbb{R}^{I \times I}$ is constructed, it serves as the core look-up database for the recommendation engine. The generation of recommendation lists follows an Item-Based Collaborative Filtering heuristic.
+
+Given a target anime $i$, the system queries the corresponding row or column in the similarity matrix to retrieve the similarity scores $s_{ij}$ for all other anime titles $j \in I$ where $j \neq i$. The scores are then sorted in descending order:
+
+\begin{equation}
+	\text{Sorted\_Similarities}(i) = \text{sort\_descending}(\{s_{ij} \mid j \in I \setminus \{i\}\})
+\end{equation}
+
+The top $N$ items with the highest cosine similarity scores are extracted to form the final recommendation vector:
+
+\begin{equation}
+	\mathbf{R}_N(i) = \{j_1, j_2, \dots, j_N\}
+\end{equation}
+
+This approach ensures that the recommended anime titles structurally align with the historical preference patterns of users who interacted with the target item, thereby providing contextually relevant and behaviorally grounded recommendations.
+
+\section{Metadata Integration and Final Output}
+While the collaborative filtering engine successfully computes vector distances to identify similar items, the raw output consists of numerical item identifiers (\texttt{anime\_id}). To enhance interpretability and user experience, a secondary metadata dataset (\texttt{anime.csv}) was integrated. 
+
+A mapping function was implemented to cross-reference the recommended IDs with this metadata repository. By performing a relational merge operation (left join), the system translates the raw ID vectors into human-readable anime titles. The final pipeline seamlessly takes a target anime, computes the top-$N$ similar items via the cosine similarity matrix, and outputs a structured table containing the actual anime names alongside their respective confidence scores. This transformation is a crucial step for practical deployment in a production environment.
 	
 \end{document}
